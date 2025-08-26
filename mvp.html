@@ -116,16 +116,30 @@
 <form id="flyerForm">
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
     <div>
-      <label>Name</label>
-      <input id="name" placeholder="Mely"/>
-    </div>
-    <div>
       <label>DOB</label>
       <input id="dob" placeholder="1/1/1999"/>
     </div>
   </div>
-  <label>About introduction</label>
-  <input id="aboutIntro" placeholder="Hello, I go by Mely and below is a quick summary of who I am:"/>
+  <label>Address</label>
+  <input id="address" placeholder="xxxx street, San Diego, CA, 92111"/>
+
+  <label>Primary Care Provider (PCP)</label>
+  <input id="pcp" placeholder="Dr. Smith"/>
+
+  <label>PCP Phone</label>
+  <input id="pcpPhone" placeholder="xxx-xxx-xxxx"/>
+
+  <label>Phone</label>
+  <input id="phone" placeholder="xxx-xxx-xxxx"/>
+
+  <label>Email</label>
+  <input id="email" placeholder="xxxx@gmail.com"/>
+
+  <label>Emergency Contact</label>
+  <input id="emergency" placeholder="Name – Phone – Email"/>
+
+  <label>DPOA</label>
+  <input id="dpoa" placeholder="Name – Phone – Email"/>
 
   <label>Morning</label>
   <textarea id="morning" rows="3" placeholder="Wake up at 11 to noon time, eat breakfast, take meds, play games on my phone, brush my teeth"></textarea>
@@ -175,7 +189,9 @@ Dr. Jinghong Li | Pulmonologist | 858-355-5864"></textarea>
     <div class="topbar">
       <div class="nameBand">
         <div class="avatar"></div>
-        <div class="nameCenter" id="flyerName">MELY</div>
+          <div class="nameCenter">
+            <span style="border-bottom:2px solid #000; display:inline-block; width:220px">&nbsp;</span>
+          </div>
         <div class="dob" id="flyerDOB">DOB: 1/1/1999</div>
       </div>
     </div>
@@ -183,7 +199,7 @@ Dr. Jinghong Li | Pulmonologist | 858-355-5864"></textarea>
     <div class="header">
       <div></div>
       <div class="hello" id="helloText">
-        Hello, I go by <b id="helloName">Mely</b> and below is a quick summary of who I am:
+        Hello, I go by <span style="border-bottom:1px solid #000; display:inline-block; width:160px">&nbsp;</span>and below is a quick summary of who I am:
       </div>
       <div>
         <div class="infoRow">
@@ -272,12 +288,19 @@ Dr. Jinghong Li | Pulmonologist | 858-355-5864"></textarea>
   const lines = t => t.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
   function fillList(text, ulId){
     const ul=document.getElementById(ulId); ul.innerHTML='';
-    lines(text).forEach(t=>{const li=document.createElement('li'); li.textContent=t; ul.appendChild(li);});
+    lines(text).forEach(t=>{
+      const li=document.createElement('li');
+      li.textContent=t;
+      ul.appendChild(li);
+    });
   }
   function fillProviders(text){
     const tbody=document.querySelector('#provTable tbody'); tbody.innerHTML='';
-    lines(text).forEach(row=>{const [name='',spec='',contact='']=row.split('|').map(s=>s.trim());
-      const tr=document.createElement('tr'); tr.innerHTML=`<td>${name}</td><td>${spec}</td><td>${contact}</td>`; tbody.appendChild(tr);
+    lines(text).forEach(row=>{
+      const [name='',spec='',contact='']=row.split('|').map(s=>s.trim());
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${name}</td><td>${spec}</td><td>${contact}</td>`;
+      tbody.appendChild(tr);
     });
   }
 
@@ -286,13 +309,24 @@ Dr. Jinghong Li | Pulmonologist | 858-355-5864"></textarea>
     document.getElementById('page1').style.display='block';
     document.getElementById('page2').style.display='block';
 
-    const name=(document.getElementById('name').value||'Mely').trim();
     const dob=(document.getElementById('dob').value||'1/1/1999').trim();
-    document.getElementById('flyerName').textContent=name.toUpperCase();
     document.getElementById('flyerDOB').textContent=`DOB: ${dob}`;
-    document.getElementById('helloName').textContent=name;
-    document.getElementById('helloText').innerHTML = `Hello, I go by <b id="helloName">${name}</b> and below is a quick summary of who I am:`;
 
+    // Fill address + PCP + contact info
+    document.getElementById('addr').textContent=document.getElementById('address').value;
+    document.querySelector('.addrCard small').textContent=`PCP Office Phone: ${document.getElementById('pcpPhone').value}`;
+    document.querySelector('.addrCard b').textContent=`PCP: ${document.getElementById('pcp').value}`;
+
+    document.querySelector('.lightCard').innerHTML = `
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+        <div><h4>Phone</h4>${document.getElementById('phone').value}</div>
+        <div><h4>Email</h4>${document.getElementById('email').value}</div>
+      </div>
+      <div style="margin-top:8px"><b>Emergency Contact:</b><br>${document.getElementById('emergency').value}</div>
+      <div style="margin-top:8px"><b>DPOA if different from above:</b><br>${document.getElementById('dpoa').value}</div>
+    `;
+
+    // Fill pills and lists
     document.getElementById('fMorning').textContent=document.getElementById('morning').value;
     document.getElementById('fMidday').textContent=document.getElementById('midday').value;
     document.getElementById('fEvening').textContent=document.getElementById('evening').value;
@@ -302,11 +336,11 @@ Dr. Jinghong Li | Pulmonologist | 858-355-5864"></textarea>
     fillList(document.getElementById('dislikes').value,'fDislikes');
     fillList(document.getElementById('helps').value,'fHelps');
     fillList(document.getElementById('struggles').value,'fStruggles');
-
     fillList(document.getElementById('meds').value,'fMeds');
     fillList(document.getElementById('adverse').value,'fAdverse');
     fillProviders(document.getElementById('providers').value);
   });
 </script>
+
 </body>
 </html>
