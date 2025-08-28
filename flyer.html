@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Patient Flyer – Multipage v3</title>
+<link href="https://fonts.cdnfonts.com/css/glacial-indifference" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#EFE5DB;  /* peach page bg */
+    --card:#fff;      /* white sheet */
+    --rail:#f2eade;   /* cream banners */
+    --ink:#1f1f1f;
+    --muted:#6d6d6d;
+    --dark-tan:#E1A185; /* left address block */
+    --light-tan:#efe3d8;/* right details block */
+    --pill-1:#f0d8c7;   /* morning */
+    --pill-2:#bdb8b5;   /* midday */
+    --pill-3:#E1A185;   /* evening */
+    --bd:#3f3f3f;
+    --bd-soft:#d0d0d0;
+  }
+  html,body{margin:0}
+  body{font-family:'Glacial Indifference', Arial, sans-serif; color:var(--ink); background:#fff; padding:24px}
+  h1,h2,h3{margin:0}
+  h2{font-size:28px; text-align: center; margin-bottom: 24px;}
+  h3{font-size:18px}
+  ul{margin:6px 0 0 18px}
+  li{margin:4px 0}
+
+  form{max-width:760px; margin:0 auto 20px; background:#fff; border:1px dashed #ddd; padding:16px; border-radius:8px}
+  input, textarea{width:100%; margin:8px 0; padding:8px; font-size:14px; border:1px solid #ddd; border-radius:6px}
+  button{padding:10px 16px; font-size:16px; border:0; background:#222; color:#fff; border-radius:8px; cursor:pointer}
+
+.page {
+  width: 900px;
+  margin: 0 auto 24px;
+  background: var(--paper);   /* fill the flyer with tan */
+  padding: 22px;
+  box-sizing: border-box;
+  border: none;               /* remove the ugly black border */
+}
+
+
+.sheet {
+  background: transparent;    /* let the tan show through */
+  border: none;               /* kill the border */
+  padding: 0;                 /* no extra white framing */
+}
+  .break{break-before: page; page-break-before: always}
+
+  /* ======== Header to match reference ======== */
+  .topbar{position:relative; padding:2px }
+/* replace your existing .nameBand rule */
+  .nameBand{
+    display:grid;
+    grid-template-columns: 88px 1fr auto; /* left = circle, middle = centered name, right = DOB */
+    align-items:center;
+  }
+  .nameCenter{ justify-self:center; font-size:36px; font-weight:800; letter-spacing:1px }
+  .dob{ justify-self:end; font-weight:800 }
+
+  .infoRow{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+
+
+  .header{display:grid; grid-template-columns: 0px 1fr 420px; gap:5px; align-items:start}
+  .headerGroup {
+    background: #fff;          /* white box */
+    padding: 10px;
+    border-radius: 6px;        /* optional: rounded corners */
+  }
+
+  .avatar{width:72px; height:72px; border-radius:50%; border:6px solid #c43a3a; display:flex; align-items:center; justify-content:center; background:#fff}
+  .avatar::after{content:""; width:28px; height:28px; background:#000; border-radius:50%}
+
+  .hello{font-size:28px; line-height:1.25}
+  .hello b{font-weight:500}
+
+  .addrCard{background:var(--dark-tan); color:#1e1e1e; padding:14px; border:1px solid #b88978; font-size:13px}
+  .lightCard{background:var(--light-tan); color:#1e1e1e; padding:14px; border:1px solid #e0cdbb; font-size:13px}
+  .addrCard h4
+  .lightCard h4{margin:0 0 6px; font-size:14px; text-transform:uppercase; letter-spacing:.5px}
+
+  .aboutRail{background:var(--card); border:1px solid #e5d7c6; text-align:center; padding:8px 10px; font-weight:800; border-radius:4px; margin:12px auto 14px; width:86%}
+
+  .grid{display:grid; gap:16px; grid-template-columns: 1fr 1fr}
+  .box{border:1px solid var(--bd-soft); padding:14px; background:#fff}
+  .box h3{font-size:16px; font-weight:800; margin-bottom:6px}
+
+  .pill{border-radius:28px; padding:12px 14px; margin:10px 0}
+  .pill h4{margin:0 0 6px; font-size:14px; text-align:center}
+  .pill.morning{background:var(--pill-1)}
+  .pill.midday{background:var(--pill-2)}
+  .pill.evening{background:var(--pill-3)}
+
+  .banner{display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; font-size:26px; background:var(--card); padding:10px; border-radius:6px; border:1px solid #e5d7c6; margin:8px auto 16px; width:80%}
+  .card{background:#fff; border:1px solid var(--bd-soft); padding:16px}
+  .providers{background:#fff; border:1px solid var(--bd-soft); padding:16px}
+  .providers h3{text-align:center; margin-bottom:10px}
+  table{width:100%; border-collapse:collapse}
+  th,td{padding:6px 8px; text-align:left}
+  th{font-weight:800}
+  tbody tr+tr td{border-top:1px solid #e6e6e6}
+
+  @page {
+    size: letter;
+    margin: 0in;   /* same effect as choosing “Minimum” */
+  }
+@media print {
+  body {
+    background: var(--paper);
+    margin: 0;
+    padding: 0;
+  }
+  .page {
+    width: auto;
+    margin: 0;
+    padding: 22px;
+    background: transparent; /* let body tan show through */
+  }
+
+  /* hide stuff we don’t want in PDF */
+  form, h2, #printBtn {
+    display: none !important;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<h2>Create Patient Flyer</h2>
+<form id="flyerForm">
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+    <div>
+      <label>DOB</label>
+      <input id="dob" placeholder="1/1/1999"/>
+    </div>
+  </div>
+  <label>Address</label>
+  <input id="address" placeholder="xxxx street, San Diego, CA, 92111"/>
+
+  <label>Primary Care Provider (PCP)</label>
+  <input id="pcp" placeholder="Dr. Smith"/>
+
+  <label>PCP Phone</label>
+  <input id="pcpPhone" placeholder="xxx-xxx-xxxx"/>
+
+  <label>Phone</label>
+  <input id="phone" placeholder="xxx-xxx-xxxx"/>
+
+  <label>Email</label>
+  <input id="email" placeholder="xxxx@gmail.com"/>
+
+  <label>Emergency Contact</label>
+  <input id="emergency" placeholder="Name – Phone – Email"/>
+
+  <label>DPOA</label>
+  <input id="dpoa" placeholder="Name – Phone – Email"/>
+
+  <label>Morning</label>
+  <textarea id="morning" rows="3" placeholder="Wake up at 11 to noon time, eat breakfast, take meds, play games on my phone, brush my teeth"></textarea>
+  <label>Midday</label>
+  <textarea id="midday" rows="3" placeholder="Eat lunch, watch my shows on YouTube and go gardening"></textarea>
+  <label>Evening</label>
+  <textarea id="evening" rows="3" placeholder="Eat dinner, brush my teeth, play games on my phone"></textarea>
+
+  <label>Important values and goals of care — one per line</label>
+  <textarea id="values" rows="4" placeholder="Dignity – I have so much pride that if I can do it I wanted to do it
+I am comfortable being at home and feel safe and my daughter taking care of me"></textarea>
+
+  <label>Things I like — one per line</label>
+  <textarea id="likes" rows="5"></textarea>
+
+  <label>Things I don’t like — one per line</label>
+  <textarea id="dislikes" rows="5"></textarea>
+
+  <label>When upset, the following help — one per line</label>
+  <textarea id="helps" rows="4"></textarea>
+
+  <label>Currently struggling with — one per line</label>
+  <textarea id="struggles" rows="5"></textarea>
+
+  <hr/>
+  <h3>Page 2</h3>
+  <label>Medications — one per line</label>
+  <textarea id="meds" rows="6" placeholder="xxx
+xxx"></textarea>
+
+  <label>Adverse medication reactions — one per line</label>
+  <textarea id="adverse" rows="5" placeholder="(unknown) was given 4 types of antibiotics when they had appendicitis and gave them an upset stomach even though they have no known drug allergies"></textarea>
+
+  <label>Providers — pipe separated per line: Name | Specialty | Contact</label>
+  <textarea id="providers" rows="6" placeholder="Dr. Arthur Balu | Primary Care | 858-657-6900
+Dr. Anna Narezkina | Cardiologist | 858-657-8530
+Dr. Kenneth Vitale | Sports Medicine | 858-657-8200
+Dr. Jinghong Li | Pulmonologist | 858-355-5864"></textarea>
+
+  <button type="submit">Generate Flyer</button>
+  <button type="button" id="printBtn" style="display:none; margin-left:8px">Print / Save as PDF</button>
+
+</form>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page" style="display:none">
+<div class="sheet">
+  <div class="headerGroup">
+    <div class="topbar">
+      <div class="nameBand">
+        <div class="avatar"></div>
+          <div class="nameCenter">
+            <span style="border-bottom:2px solid #000; display:inline-block; width:220px">&nbsp;</span>
+          </div>
+        <div class="dob" id="flyerDOB">DOB: 1/1/1999</div>
+      </div>
+    </div>
+
+    <div class="header">
+      <div></div>
+      <div class="hello" id="helloText">
+        Hello, I go by <span style="border-bottom:1px solid #000; display:inline-block; width:160px">&nbsp;</span>and below is a quick summary of who I am:
+      </div>
+      <div>
+        <div class="infoRow">
+          <div class="addrCard">
+            <h4>I live at…</h4>
+            <div id="addr">xxxx street, San Diego, CA, 92111</div>
+            <div style="margin-top:8px"><b>PCP:</b> xxxx<br>
+              <small>PCP Office Phone: xxx-xxx-xxxx</small>
+            </div>
+          </div>
+
+          <div class="lightCard">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+              <div>
+                <h4>Phone</h4>
+                xxx-xxx-xxxx
+              </div>
+              <div>
+                <h4>Email</h4>
+                xxxxxx@gmail.com
+              </div>
+            </div>
+            <div style="margin-top:8px"><b>Emergency Contact:</b><br>Phone:<br>Emergency Email:</div>
+            <div style="margin-top:8px"><b>DPOA if different from above:</b><br>Phone:<br>Email:</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- end headerGroup -->
+
+    <div class="aboutRail">About Me</div>
+
+    <div class="grid">
+      <div class="box">
+        <h3>My typical day looks like…</h3>
+        <div class="pill morning"><h4>Morning</h4><div id="fMorning"></div></div>
+        <div class="pill midday"><h4>Midday</h4><div id="fMidday"></div></div>
+        <div class="pill evening"><h4>Evening</h4><div id="fEvening"></div></div>
+        <h3 style="margin-top:10px">The following are important values and my goals of care</h3>
+        <ul id="fValues"></ul>
+      </div>
+
+      <div>
+        <div class="box" style="margin-bottom:16px">
+          <h3>Things I like, including favorite foods, activities, hobbies, music, etc</h3>
+          <ul id="fLikes"></ul>
+        </div>
+        <div class="box">
+          <h3>Things I don’t like, including triggers, avoidance, behaviors, etc</h3>
+          <ul id="fDislikes"></ul>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>When I get upset, the following activities or interventions can be helpful</h3>
+        <ul id="fHelps"></ul>
+      </div>
+      <div class="box">
+        <h3>I am currently struggling the most with…</h3>
+        <ul id="fStruggles"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page break" style="display:none">
+  <div class="sheet">
+    <div class="banner">💊 Medications</div>
+    <div class="card"><ul id="fMeds"></ul></div>
+
+    <div class="banner" style="margin-top:18px">⚠️ Adverse Medication Reactions ⚠️</div>
+    <div class="card"><ul id="fAdverse" style="color:#b22222"></ul></div>
+
+    <div class="providers" style="margin-top:18px">
+      <h3>My Health Care Providers</h3>
+      <table id="provTable">
+        <thead><tr><th style="width:40%">Name</th><th style="width:35%">Specialty</th><th>Contact Information</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', ()=>{
+
+  const lines = t => t.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+
+  function fillList(text, ulId){
+    const ul=document.getElementById(ulId); ul.innerHTML='';
+    lines(text).forEach(t=>{
+      const li=document.createElement('li');
+      li.textContent=t;
+      ul.appendChild(li);
+    });
+  }
+
+  function fillProviders(text){
+    const tbody=document.querySelector('#provTable tbody'); tbody.innerHTML='';
+    lines(text).forEach(row=>{
+      const [name='',spec='',contact='']=row.split('|').map(s=>s.trim());
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${name}</td><td>${spec}</td><td>${contact}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('flyerForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    document.getElementById('page1').style.display='block';
+    document.getElementById('page2').style.display='block';
+    document.getElementById('printBtn').style.display='inline-block'; // reveal button
+
+    const dob=(document.getElementById('dob').value||'1/1/1999').trim();
+    document.getElementById('flyerDOB').textContent=`DOB: ${dob}`;
+
+    document.getElementById('addr').textContent=document.getElementById('address').value;
+    document.querySelector('.addrCard small').textContent=`PCP Office Phone: ${document.getElementById('pcpPhone').value}`;
+    document.querySelector('.addrCard b').textContent=`PCP: ${document.getElementById('pcp').value}`;
+
+    document.querySelector('.lightCard').innerHTML = `
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+        <div><h4>Phone</h4>${document.getElementById('phone').value}</div>
+        <div><h4>Email</h4>${document.getElementById('email').value}</div>
+      </div>
+      <div style="margin-top:8px"><b>Emergency Contact:</b><br>${document.getElementById('emergency').value}</div>
+      <div style="margin-top:8px"><b>DPOA if different from above:</b><br>${document.getElementById('dpoa').value}</div>
+    `;
+
+    document.getElementById('fMorning').textContent=document.getElementById('morning').value;
+    document.getElementById('fMidday').textContent=document.getElementById('midday').value;
+    document.getElementById('fEvening').textContent=document.getElementById('evening').value;
+
+    fillList(document.getElementById('values').value,'fValues');
+    fillList(document.getElementById('likes').value,'fLikes');
+    fillList(document.getElementById('dislikes').value,'fDislikes');
+    fillList(document.getElementById('helps').value,'fHelps');
+    fillList(document.getElementById('struggles').value,'fStruggles');
+    fillList(document.getElementById('meds').value,'fMeds');
+    fillList(document.getElementById('adverse').value,'fAdverse');
+    fillProviders(document.getElementById('providers').value);
+  });
+
+  document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+});
+</script>
+
+
+</body>
+</html>
